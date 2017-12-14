@@ -342,7 +342,7 @@ class iRealRenderer {
 		if (over)
 			html += `<irr-over>${this.baseChordHtml(over)}</irr-over>`;
 		if (alternate) 
-			html += `<irr-chord>${this.chordHtml(alternate)}</irr-chord>`;
+			html = `<irr-chord>${this.chordHtml(alternate)}</irr-chord>` + html;
 		return html;
 	}
 	

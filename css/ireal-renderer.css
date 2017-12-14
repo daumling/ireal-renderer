@@ -64,6 +64,7 @@ irr-chord>sup, irr-chord>sub {
   vertical-align: baseline;
   position: relative;
   top: -0.4em;
+  font-size: 0.7em;
 }
 
 irr-chord>sub {
@@ -74,10 +75,9 @@ irr-chord>sub {
 
 /* Alternate chords above the regular chord */
 irr-chord>irr-chord {
-	position: absolute;
-	left: 1ch;
-	top: -1em;
 	font-size: 0.6em;
+	transform: translate(30%, -60%);
+	position: absolute;
 }
 
 /* The "over note" in regular chords */
@@ -103,7 +103,8 @@ irr-measure {
 	font-size: 0.9em;
 	font-weight: normal;
 	position: absolute;
-	left: -0.5em;
+	left: -0.6em;
+	top: -0.3em;
 	line-height: 1.05em;
 	text-align: center;
 }
@@ -123,7 +124,7 @@ irr-section {
 	font-size: 0.5em;
 	font-weight: bold;
 	margin-left: -2ch;
-	padding: 2px 4px;
+	padding: 0px 4px;
 	background-color: #ccc;
 }
 
@@ -191,6 +192,6 @@ irr-chords[data-hilite] irr-char.irr-root {
 @media print {
 	irr-section {
 		border: 1px solid grey;
-		padding: 1px 3px;
+		padding: 0px 3px;
 	}
 }

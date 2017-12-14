@@ -86,14 +86,10 @@ Here is a generic function to render a song:
 function renderSong(playlist, index, container) {
     // transposing options
     var options = {
-        // how to render minor chords
-        minor: "minus",
-        // number of half tones to transpose
-        transpose: 0,
-        // use "H" instead of "B"
-        useH: false,
-        // usge hiliting
-        hilite: true
+        minor: "minus",     // how to render minor chords
+        transpose: 0,       // number of half tones to transpose
+        useH: false,        // use "H" instead of "B"
+        hilite: true        // usge hiliting
     };
     var song = playlist.songs[index];
     var r = new iRealRenderer;
@@ -131,8 +127,8 @@ The Song class encapsulates an iReal Pro song. It has the following members:
 - `key` - the key
 - `composer` - the composer
 - `transpose` - the number of half keys to transpose the song (as set in iReal Pro)
-- `exStyle` - extended style (the style set with the dwop-down in the lower left within iReal Pro)
 - `style` - the style, e.g. "Medium Swing"
+- `exStyle` - extended style (the style set with the dwop-down in the lower left within iReal Pro)
 - `bpm` - the beats per minute if set explicitly
 - `repeats` - the number of repeats if set explicitly
 - `music` - the contents of the song that the iRealReader class renders
@@ -170,7 +166,7 @@ annotations, sections, comments, over notes, alternate chords and measures in re
 `render(song, container, options)`
 
 Render the song into the given jQuery container using the supplied options. Currently,
-onf the `hilite`options is supported (see above). Set the conteiner's font size to 
+only the `hilite` option is supported (see above). Set the container's font size to 
 scale the output.
 
 #### iRealToken
@@ -179,10 +175,10 @@ The iRealToken class encapsulates a cell token. It contains these properties:
 
 - `chord` - if non-null, a iRealChord object containing the main chord
 - `comments` - an array of comment strings; these strings may begin with "*nn",
-where "nn" is a displacment value of approximately 1/20em per unit.
+where "nn" is a displacement value of approximately 1/20em per unit.
 - `annots` - a string of annotations:
   - "*x"  - section, like *v, *I, *A, *B etc
-  - "Nx"  - repeat bots (N1, N2 etc)
+  - "Nx"  - repeat signs (N1, N2 etc)
   - "Q"   - coda
   - "S"   - segno
   - "Txx" - measure (T44 = 4/4 etc, but T12 = 12/8)
