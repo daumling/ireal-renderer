@@ -278,11 +278,12 @@ class iRealRenderer {
 				this.nextRow(table, cell.spacer);
 			else
 				this.cell++;
-			var html = this.cellHtml(cell);
+			var html = "";
 			if (cell.annots.length)
 				html += this.annotHtml(cell.annots);
 			if (cell.comments.length)
 				html += this.commentHtml(cell.comments);
+			html += this.cellHtml(cell);
 			var el = this.cells[this.cell];
 			if (this.small)
 				el.addClass("irr-small");
