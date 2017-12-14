@@ -11,6 +11,7 @@ Features:
 - Almost no graphics included, except for a fake background for sections to make printers print the background
 - Runs on almost any modern browser (IE excluded)
 - Runs both in a Web and a node.js environment
+- Print ready
 - Demos for the Web and [Electron](http://electron.atom.io) included
 
 Requirements:
@@ -28,11 +29,18 @@ It does not extract the music notes, and the peoperties of the Song object is a 
 
 - `ireal-renderer` - the renderer does all the rendegin work; all it needs is a Song object, a jQuery container, and a few obtions.
 
-### Installation
+### Install
 
 #### npm
 
-Install the module with `npm install ireal-renderer`.
+Install the module with `npm install ireal-renderer`. 
+
+If you want to run the Electron demo, go to the `electron` folder anr run `npm install`,
+then `electron .`, or `npm start`. The demo assumes that you have installed Electron
+globally.
+
+This snippet loads the demo playlist and renders the first song. The `renderSong()`
+function is documented below.
 
 ``` javascript
 const fs = require('fs');
@@ -57,15 +65,8 @@ Download the `ireal-renderer` directory, and include the contents:
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.js"></script>
     <script src="/ireal-renderer/ireal-reader-tiny.js"></script>
     <script src="/ireal-renderer/ireal-renderer.js"></script>
-    <script>
-        // for the Web version, tell iRealRenderer where to find CSS files
-        iRealRenderer.cssPrefix = "/ireal-renderer/";
-    </script>
 </head>
 ```
-
-You should of course set the `cssprefix` member to the correct root path where you
-installed the package.
  
 ### Usage
 
@@ -223,5 +224,4 @@ The irealb schema was originally cracked by Stephen Irons'
 The Playlist class is a stripped down version of 
 [Florin's (aka pianosnake) ireal-reader](https://github.com/pianosnake/ireal-reader).
 
-The iRealFont is a modified extract from [Steinberg's public domain Bravura font]
-[https://github.com/steinbergmedia/bravura).
+The iRealFont is a modified extract from [Steinberg's public domain Bravura font](https://github.com/steinbergmedia/bravura).

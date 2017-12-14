@@ -1,0 +1,25 @@
+{
+  "name": "ireal-renderer-demo",
+  "version": "1.0.0",
+  "description": "An Electron demo of ireal-renderer",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [
+    "Electron",
+    "iReal",
+    "iReal Pro",
+    "chords",
+    "music",
+    "music notation",
+    "renderer",
+    "html5",
+    "es6"
+  ],
+  "author": "Michael Daumling",
+  "license": "MIT",
+  "dependencies": {
+    "jquery": "^3.2.1"
+  }
+}
