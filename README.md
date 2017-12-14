@@ -1,5 +1,4 @@
 # ireal-renderer
-A HTML5/ES6 implementation of a renderer for iReal Pro playlists
 
 Render an iReal Pro playlist in an HTML page.
 
@@ -63,8 +62,9 @@ Download the `ireal-renderer` directory, and include the contents:
         iRealRenderer.cssPrefix = "/ireal-renderer/";
     </script>
 </head>
+```
 
-You should, of course set the `cssprefix` member to the correct root path where you
+You should of course set the `cssprefix` member to the correct root path where you
 installed the package.
  
 ### Usage
@@ -218,6 +218,10 @@ This class wraps a chord speficier with these members:
 ## Acknowledgments
 
 The irealb schema was originally cracked by Stephen Irons' 
-[Accompaniser](https://github.com/ironss/accompaniser). The Playlist class is a 
-stripped down version of 
+[Accompaniser](https://github.com/ironss/accompaniser). 
+
+The Playlist class is a stripped down version of 
 [Florin's (aka pianosnake) ireal-reader](https://github.com/pianosnake/ireal-reader).
+
+The iRealFont is a modified extract from [Steinberg's public domain Bravura font]
+[https://github.com/steinbergmedia/bravura).
