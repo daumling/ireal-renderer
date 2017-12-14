@@ -1,4 +1,5 @@
 # ireal-renderer
+A HTML5/ES6 implementation of a renderer for iReal Pro playlists
 
 Render an iReal Pro playlist in an HTML page.
 
