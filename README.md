@@ -1,45 +1,222 @@
-# electron-quick-start
+# ireal-renderer
 
-**Clone and run for a quick way to see Electron in action.**
+Render an iReal Pro playlist in an HTML page.
 
-This is a minimal Electron application based on the [Quick Start Guide](http://electron.atom.io/docs/tutorial/quick-start) within the Electron documentation.
+Features:
 
-**Use this app along with the [Electron API Demos](http://electron.atom.io/#get-started) app for API code examples to help you get started.**
+- Renders (hopefully) any iReal Pro song into a jQuery container
+- Scales nicely by changing the container's font size
+- Transpose songs and set rendering options
+- Uses a custom font to display musical symbols
+- Almost no graphics included, except for a fake background for sections to make printers print the background
+- Runs on almost any modern browser (IE excluded)
+- Runs both in a Web and a node.js environment
+- Demos for the Web and [Electron](http://electron.atom.io) included
 
-A basic Electron application needs just these files:
+Requirements:
 
-- `package.json` - Points to the app's main file and lists its details and dependencies.
-- `main.js` - Starts the app and creates a browser window to render HTML. This is the app's **main process**.
-- `index.html` - A web page to render. This is the app's **renderer process**.
+- jQuery
+- HTML 5 plus CSS grids
+- Ecmascript 2015 (ES6)
 
-You can learn more about each of these components within the [Quick Start Guide](http://electron.atom.io/docs/tutorial/quick-start).
+### Modules
 
-## To Use
+The package comes with two modules.
 
-To clone and run this repository you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed on your computer. From your command line:
+- `ireal-ready-tiny` - this module is a stripped down version of [Florin's (aka pianosnake) ireal-reader](https://github.com/pianosnake/ireal-reader).
+It does not extract the music notes, and the peoperties of the Song object is a little different.
 
-```bash
-# Clone this repository
-git clone https://github.com/electron/electron-quick-start
-# Go into the repository
-cd electron-quick-start
-# Install dependencies
-npm install
-# Run the app
-npm start
+- `ireal-renderer` - the renderer does all the rendegin work; all it needs is a Song object, a jQuery container, and a few obtions.
+
+### Installation
+
+#### npm
+
+Install the module with `npm install ireal-renderer`.
+
+``` javascript
+const fs = require('fs');
+const { Playlist, iRealRenderer } = require('ireal-renderer');
+
+fs.readFile("ireal-playlist.html", "utf8", function(err, data) {
+    if (err) throw err;
+    const playlist = new Playlist(data);
+    // see below
+    renderSong(playlist, 0, $("#cong-container"));
+});
 ```
 
-Note: If you're using Linux Bash for Windows, [see this guide](https://www.howtogeek.com/261575/how-to-run-graphical-linux-desktop-applications-from-windows-10s-bash-shell/) or use `node` from the command prompt.
+### Web
 
-## Resources for Learning Electron
+Download the `ireal-renderer` directory, and include the contents:
 
-- [electron.atom.io/docs](http://electron.atom.io/docs) - all of Electron's documentation
-- [electron.atom.io/community/#boilerplates](http://electron.atom.io/community/#boilerplates) - sample starter apps created by the community
-- [electron/electron-quick-start](https://github.com/electron/electron-quick-start) - a very basic starter Electron app
-- [electron/simple-samples](https://github.com/electron/simple-samples) - small applications with ideas for taking them further
-- [electron/electron-api-demos](https://github.com/electron/electron-api-demos) - an Electron app that teaches you how to use Electron
-- [hokein/electron-sample-apps](https://github.com/hokein/electron-sample-apps) - small demo apps for the various Electron APIs
+``` html
+<head>
+    <link rel="stylesheet" href="/ireal-renderer/css/ireal-renderer.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.js"></script>
+    <script src="/ireal-renderer/ireal-reader-tiny.js"></script>
+    <script src="/ireal-renderer/ireal-renderer.js"></script>
+    <script>
+        // for the Web version, tell iRealRenderer where to find CSS files
+        iRealRenderer.cssPrefix = "/ireal-renderer/";
+    </script>
+</head>
+
+You should, of course set the `cssprefix` member to the correct root path where you
+installed the package.
+ 
+### Usage
+
+The reader is straight forward to use. Its constructor accepts the iReal Pro playlist, which
+is a HTML file with a special `ireal:` link protocol. It fills its `songs` array with Song
+instances, which contain all necessary information about a song.
+
+The rendering process is a three-step process. First, the iReal Pro music is parsed into cell
+tokens. iReal Pro uses rows of 16 cells each, and each cell can have vertical bars, chords,
+alternate chords, annotations, and more. The second step transposes the tokens and applies the
+rendering options. The third and final pass does the actual rendering. This three-step approach
+lets you apply your own changes to the cell tokens, by e.g. removing or altering comments.
+
+Here is a generic function to render a song:
+
+``` javascript
+function renderSong(playlist, index, container) {
+    // transposing options
+    var options = {
+        // how to render minor chords
+        minor: "minus",
+        // number of half tones to transpose
+        transpose: 0,
+        // use "H" instead of "B"
+        useH: false,
+        // usge hiliting
+        hilite: true
+    };
+    var song = playlist.songs[index];
+    var r = new iRealRenderer;
+    r.parse(song);
+    song = r.transpose(song, options);
+    container.empty();
+    container.append(`<h3>${song.title} (${song.key})</h3>`);
+    r.render(song, container, options);
+}
+```
+
+### Bugs
+
+The package is most likely not bug-free at all,. It is simply impossible to think
+of any possible way to render an iReal Pro song. Please feel free to contact me
+with any songs that do not render correctly. Also, feel free to fork or submit 
+pull requests. Use the demo to test the renderer.
+
+## APIs
+
+### ireal-reader-tiny
+
+#### Playlist
+
+`new Playlist(html)`
+
+Constructs a new playlist using the text, which should contain an `ireal:` link.
+The songs are available in its `songs` member.
+
+#### Song
+
+The Song class encapsulates an iReal Pro song. It has the following members:
+
+- `title` - the title
+- `key` - the key
+- `composer` - the composer
+- `transpose` - the number of half keys to transpose the song (as set in iReal Pro)
+- `exStyle` - extended style (the style set with the dwop-down in the lower left within iReal Pro)
+- `style` - the style, e.g. "Medium Swing"
+- `bpm` - the beats per minute if set explicitly
+- `repeats` - the number of repeats if set explicitly
+- `music` - the contents of the song that the iRealReader class renders
+- `cells` - an array of cell tokens, filled in after a call to `iRealRenderer.parse()`.
+
+### ireal-renderer
+
+#### iRealRenderer
+
+`new iRealReader()`
+
+The constructor does not take any arguments.
+
+`parse(song)`
+
+Parse the music string into cell tokens, and store an array of iRealToken instances
+into the song's `cells` array. Each token is an object with the contents of a single #
+cell. iReal Pro works with rows of 16 cells each.
+
+`transpose(song, options)`
+
+Apply the transposing options to the given song, and return a modified copy of the
+song. The options have the following properties:
+
+- `transpose` - the number of half tones to transpose the song. Note that this value
+is added to the songs transpose value.
+- `minor` - the way minor chords are rendered. "minus" display s minus sign as in "Bb-",
+"m" displays a small "m" as in "Bbm", and "small" displays the note in small letters as
+in "bb".
+- `useH` - some countries prefer the letter "H" instead of the letter "B" for the note B.
+Set this property to true to achieve this behavior.
+- `hilite` - this option is for the renderer. If set to true, the renderer renders
+annotations, sections, comments, over notes, alternate chords and measures in red.
+
+`render(song, container, options)`
+
+Render the song into the given jQuery container using the supplied options. Currently,
+onf the `hilite`options is supported (see above). Set the conteiner's font size to 
+scale the output.
+
+#### iRealToken
+
+The iRealToken class encapsulates a cell token. It contains these properties:
+
+- `chord` - if non-null, a iRealChord object containing the main chord
+- `comments` - an array of comment strings; these strings may begin with "*nn",
+where "nn" is a displacment value of approximately 1/20em per unit.
+- `annots` - a string of annotations:
+  - "*x"  - section, like *v, *I, *A, *B etc
+  - "Nx"  - repeat bots (N1, N2 etc)
+  - "Q"   - coda
+  - "S"   - segno
+  - "Txx" - measure (T44 = 4/4 etc, but T12 = 12/8)
+  - "U"   - END
+  - "f"   - fermata
+  - "l"   - (letter l) normal font width
+  - "s"   - condensed font width
+- `bars`- a string describing the bars:
+  - "|" - single vertical bar, left
+  - "[" - double bar, left
+  - "]" - double bar, right
+  - "{" - repeat bar, left
+  - "}" - repeat bar, right
+  - "Z" - end bar, right
+- `spacer` - a number indicating the number of vertical spacers above this cell
+
+#### iRealChord
+
+This class wraps a chord speficier with these members:
+
+- `note` - the base note; this can also be one of the following:
+  - "W" - invisible root
+  - "p" - pause
+  - "x" - single repeat
+  - "r" - double repeat
+- `modifiers` - a string with the chord modifiers, like 7, +, -, o etc
+- `over` - if non-null, an iRealChord object containing the over note
+- `alternate` - if non-null, a iRealChord object for the alternate chord 
 
 ## License
 
-[CC0 1.0 (Public Domain)](LICENSE.md)
+[MIT (Public Domain)](LICENSE.md)
+
+## Acknowledgments
+
+The irealb schema was originally cracked by Stephen Irons' 
+[Accompaniser](https://github.com/ironss/accompaniser). The Playlist class is a 
+stripped down version of 
+[Florin's (aka pianosnake) ireal-reader](https://github.com/pianosnake/ireal-reader).
