@@ -1,6 +1,6 @@
 {
   "name": "ireal-renderer",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "An HTML5/ES6 based renderer for iReal Pro playlists",
   "main": "src/ireal-renderer.js",
   "scripts": {
@@ -11,7 +11,7 @@
     "url": "git+https://github.com/daumling/ireal-renderer.git"
   },
   "keywords": [
-	"iReal",
+    "iReal",
     "iReal Pro",
     "chords",
     "music",
