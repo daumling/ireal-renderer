@@ -21,7 +21,7 @@ irr-char, irr-lbar, irr-rbar, irr-measure, irr-annot {
 /* Outer container; if attribute data-hilite is set, hiliting is active */
 irr-chords {
 	box-sizing: border-box;
-	text-size-adjust: 100%;
+	line-height:normal;
 	display: grid;
 	grid-row-gap: 0.4em;
 	grid-template-columns: repeat(16, 6.25%);
@@ -104,8 +104,8 @@ irr-over:before {
 irr-measure {
 	font-size: 0.9em;
 	font-weight: normal;
-	position: fixed;
-	transform: translate(-0.5ch, -0.05em);
+	position: absolute;
+	transform: translate(-0.5ch, -0.15em);
 	line-height: 1.05em;
 	text-align: center;
 }
