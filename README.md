@@ -2,6 +2,8 @@
 
 ### Renders an iReal Pro playlist in an HTML page.
 
+**[Click here to launch a live demo!](https://daumling.com/demo/ireal-renderer/demo/)**
+
 #### Features
 
 - Renders (hopefully) any iReal Pro song into a jQuery container
@@ -105,6 +107,8 @@ function renderSong(playlist, index, container) {
 ### Demos
 
 The `demo` folder contains the Web version. Launch `index.html`to see the demo.
+
+[Click here to launch a live demo!](https://daumling.com/demo/ireal-renderer/demo/)
 
 The `electron`folder contains the Electron demo. Change to that folder and run
 `npm install` and `electron .`. The demo assumes that Electron is installed globally.
