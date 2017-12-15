@@ -20,6 +20,7 @@
   "author": "Michael Daumling",
   "license": "MIT",
   "dependencies": {
-    "jquery": "^3.2.1"
+    "jquery": "^3.2.1",
+    "ireal-renderer": "^1.0.0"
   }
 }

@@ -4,35 +4,7 @@
     <meta charset="UTF-8">
     <title>iRealRenderer Demo</title>
 		<link rel="stylesheet" href="demo.css">
-		<link rel="stylesheet" href="../css/ireal-renderer.css">
-
-		<script>
-			/*
-			 * Do some trickery here to share the index.html page between Electron
-			 * and a browser. For browsers, dynamically add script tags, and use
-			 * the window.load event instead of document.DOMContentLoaded event
-			 * to be sure that these scripts have been loaded.
-			 */
-			if (typeof module !== "undefined") {
-				// jQuery
-				var $ = require("jquery");
-				// Node.js / Electron
-				var { Playlist, iRealRenderer } = require("../");
-			}
-			else {
-				// browsers
-				function loadScript(src) {
-					var s = document.createElement("script");
-					s.src = src;
-					s.type = "text/javascript";
-					s.async = true;
-					document.head.appendChild(s);
-				}
-				loadScript("https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.js");
-				loadScript("../src/ireal-reader-tiny.js");
-				loadScript("../src/ireal-renderer.js");
-			}
-		</script>
+		<link rel="stylesheet" href="node_modules/ireal-renderer/css/ireal-renderer.css">
 		<script src="demo.js"></script>
 	</head>
 	<body>

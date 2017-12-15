@@ -1,8 +1,8 @@
 # ireal-renderer
 
-Render an iReal Pro playlist in an HTML page.
+### Renders an iReal Pro playlist in an HTML page.
 
-Features:
+#### Features
 
 - Renders (hopefully) any iReal Pro song into a jQuery container
 - Scales nicely by changing the container's font size
@@ -14,7 +14,7 @@ Features:
 - Print ready
 - Demos for the Web and [Electron](http://electron.atom.io) included
 
-Requirements:
+#### Requirements
 
 - jQuery
 - HTML 5 plus CSS grids
@@ -44,6 +44,7 @@ function is documented below.
 
 ``` javascript
 const fs = require('fs');
+const $ = require("jquery");
 const { Playlist, iRealRenderer } = require('ireal-renderer');
 
 fs.readFile("ireal-playlist.html", "utf8", function(err, data) {
@@ -100,6 +101,16 @@ function renderSong(playlist, index, container) {
     r.render(song, container, options);
 }
 ```
+
+### Demos
+
+The `demo` folder contains the Web version. Launch `index.html`to see the demo.
+
+The `electron`folder contains the Electron demo. Change to that folder and run
+`npm install` and `electron .`. The demo assumes that Electron is installed globally.
+
+Both demos can load and display iReal Pro playlists, which means that they can be 
+used to test the renderer.
 
 ### Bugs
 

@@ -1,5 +1,8 @@
-window.addEventListener("load", () => {
+const { Playlist, iRealRenderer } = require("ireal-renderer");
+const $ = require("jquery");
 
+$(document).ready(() => {
+	
 	var playlist;
 	var options = {
 		minor: "minus",
