@@ -22,7 +22,7 @@
   ],
   "dependencies": {
     "jquery": "^2.1.4"
-  }
+  },
   "author": "Michael Daumling",
   "license": "MIT",
   "homepage": "https://github.com/daumling/ireal-renderer#readme"
