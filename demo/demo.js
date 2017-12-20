@@ -1,4 +1,6 @@
-window.addEventListener("load", () => {
+// global document, window
+
+window.addEventListener("load", async () => {
 
 	var playlist;
 	var options = {
@@ -10,14 +12,14 @@ window.addEventListener("load", () => {
 	
 	function makePlaylist(text) {
 		playlist = new Playlist(text);
-		var lb = $("#songs");
-		lb.empty();
-		var chords = $("#chords");
-		chords.empty();
+		var lbHtml = "";
+		var chordsHtml = "";
 		for (var i = 0; i < playlist.songs.length; i++) {
-			lb.append(`<option value="${i}">${playlist.songs[i].title}</option>`);
-			chords.append(`<div id="song-${i}"></div>`);
+			lbHtml += `<option value="${i}">${playlist.songs[i].title}</option>`;
+			chordsHtml += `<div id="song-${i}"></div>`;
 		}
+		document.getElementById("songs").innerHTML = lbHtml;
+		document.getElementById("chords").innerHTML = chordsHtml;
 	}
 	
 	/**
@@ -29,52 +31,60 @@ window.addEventListener("load", () => {
 		var r = new iRealRenderer;
 		r.parse(song);
 		song = r.transpose(song, options);
-		var container = $("#song-" + index);
-		container.empty();
-		container.append(`<h3>${song.title} (${song.key})</h3>`);
+		var container = document.getElementById("song-" + index);
+		container.innerHTML = `<h3>${song.title} (${song.key})</h3>`;
 		r.render(song, container, options);			
 	}
 	
 	function renderSelected() {
-		var selected = $("#songs").val();
-		selected = selected.map(val => +val);
+		var selected = document.getElementById("songs").options;
+		selected = [...selected].filter(option => option.selected).map(el => +el.value);
 		for (var i = 0; i < playlist.songs.length; i++) {
 			if (selected.includes(i))
 				renderSong(i);
 			else
-				$(`#song-${i}`).empty();
+				document.getElementById(`song-${i}`).innerHTML = "";
 		}
 	}
 
-	$("#songs").on("change", () => renderSelected());
+	document.getElementById("songs").addEventListener("change", () => renderSelected());
 	
-	$('[name="minor"]').on("click", function() {
-		var mode = $(this).prop("id");
-		options.minor = mode;
+	document.querySelectorAll('[name="minor"]').forEach(el => {
+		el.addEventListener("click", (ev) => {
+			var mode = ev.target.id;
+			options.minor = mode;
+			renderSelected();
+		});
+	});
+
+	document.getElementById("ui-useh").addEventListener("click", ev => {
+		options.useH = ev.target.checked;
 		renderSelected();
 	});
 
-	$("#ui-useh").on("click", function() {
-		options.useH = $(this).is(":checked");
+	document.getElementById("ui-hilite").addEventListener("click", ev => {
+		options.hilite = ev.target.checked;
 		renderSelected();
 	});
 
-	$("#ui-hilite").on("click", function() {
-		options.hilite = $(this).is(":checked");
+	document.getElementById("ui-transpose").addEventListener("input", ev => {
+		options.transpose = +ev.target.value;
+		renderSelected();
+	});
+	document.getElementById("ui-transpose").addEventListener("change", ev => {
+		options.transpose = +ev.target.value;
 		renderSelected();
 	});
 
-	$("#ui-transpose").on("input change", function() {
-		options.transpose = +$(this).val();
-		renderSelected();
+	document.getElementById("ui-fontsize").addEventListener("input", ev => {
+		document.getElementById("chords").style.fontSize = ev.target.value + "pt";
+	});
+	document.getElementById("ui-fontsize").addEventListener("change", ev => {
+		document.getElementById("chords").style.fontSize = ev.target.value + "pt";
 	});
 
-	$("#ui-fontsize").on("input change", function() {
-		$("#chords").css("font-size", $(this).val() + "pt");
-	});
-
-	$("#ui-file").on("change", function(e) {
-		var f = e.target.files[0];
+	document.getElementById("ui-file").addEventListener("change", ev => {
+		var f = ev.target.files[0];
 		var reader = new FileReader();
 		reader.addEventListener("loadend", () => {
 			if (reader.error)
@@ -85,7 +95,14 @@ window.addEventListener("load", () => {
 		reader.readAsText(f, "utf-8");
 	});
 
-	$.get("DemoPlaylist.html", (text) => {
-		makePlaylist(text);
-	});
+	// Did the import of our DemoPlaylist.html file work?
+	var el = document.querySelectorAll('link[rel="import"]');
+	if (el.length)
+		makePlaylist(el[0].import.body.innerHTML);
+	else {
+		// If not, try to load via fetch()
+		var response = await fetch("DemoPlaylist.html");
+		if (response.ok)
+				makePlaylist(await response.text());
+		}
 });

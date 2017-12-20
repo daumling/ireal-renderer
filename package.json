@@ -21,7 +21,6 @@
     "es6"
   ],
   "dependencies": {
-    "jquery": "^2.1.4"
   },
   "author": "Michael Daumling",
   "license": "MIT",

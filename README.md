@@ -6,11 +6,10 @@
 
 #### Features
 
-- Renders (hopefully) any iReal Pro song into a jQuery container
+- Renders (hopefully) any iReal Pro song into an HTML container element
 - Scales nicely by changing the container's font size
 - Transpose songs and set rendering options
 - Uses a custom font to display musical symbols
-- Almost no graphics included, except for a fake background for sections to make printers print the background
 - Runs on almost any modern browser (IE excluded)
 - Runs both in a Web and a node.js environment
 - Print ready
@@ -18,7 +17,6 @@
 
 #### Requirements
 
-- jQuery
 - HTML 5 plus CSS grids
 - Ecmascript 2015 (ES6)
 
@@ -27,9 +25,9 @@
 The package comes with two modules.
 
 - `ireal-reader-tiny` - a stripped down version of [Florin's (aka pianosnake) ireal-reader](https://github.com/pianosnake/ireal-reader).
-It does not extract the music notes, and the properties of the Song object is a little different.
+It does not extract the music notes, and the properties of the Song object are a little different.
 
-- `ireal-renderer` - the renderer itself; all it needs is a Song object, a jQuery container, and a few options.
+- `ireal-renderer` - the renderer itself; all it needs is a Song object, a HTML container element, and a few options.
 
 ### Install
 
@@ -42,14 +40,13 @@ function is documented below.
 
 ``` javascript
 const fs = require('fs');
-const $ = require("jquery");
 const { Playlist, iRealRenderer } = require("ireal-renderer");
 
 fs.readFile("DemoPlaylist.html", "utf8", function(err, data) {
     if (err) throw err;
     const playlist = new Playlist(data);
     // see below
-    renderSong(playlist, 0, $("#cong-container"));
+    renderSong(playlist, 0, document.querySelector("#cong-container"));
 });
 ```
 
@@ -60,8 +57,6 @@ Download the `ireal-renderer` directory, and include the contents:
 ``` html
 <head>
     <link rel="stylesheet" href="/ireal-renderer/css/ireal-renderer.css">
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.js"></script>
     <script src="/ireal-renderer/ireal-reader-tiny.js"></script>
     <script src="/ireal-renderer/ireal-renderer.js"></script>
 </head>
@@ -88,7 +83,7 @@ function renderSong(playlist, index, container) {
         minor: "minus",     // how to render minor chords
         transpose: 0,       // number of half tones to transpose
         useH: false,        // use "H" instead of "B"
-        hilite: true        // usge hiliting
+        hilite: true        // use hiliting
     };
     var song = playlist.songs[index];
     var r = new iRealRenderer;
@@ -123,14 +118,14 @@ pull requests. Use the demo to test the renderer.
 
 ### ireal-reader-tiny
 
-#### Playlist
+#### class Playlist
 
 `new Playlist(html)`
 
 Constructs a new playlist using the text, which should contain an `ireal:` link.
 It stores the songs in its `songs` array member.
 
-#### Song
+#### class Song
 
 The Song class encapsulates an iReal Pro song. It has the following members:
 
@@ -147,7 +142,7 @@ The Song class encapsulates an iReal Pro song. It has the following members:
 
 ### ireal-renderer
 
-#### iRealRenderer
+#### class iRealRenderer
 
 `new iRealReader()`
 
@@ -176,11 +171,11 @@ annotations, sections, comments, over notes, alternate chords and measures in re
 
 `render(song, container, options)`
 
-Render the song into the given jQuery container using the supplied options. Currently,
+Render the song into the given HTML container element using the supplied options. Currently,
 only the `hilite` option is supported (see above). Set the container's font size to 
 scale the output.
 
-#### iRealToken
+#### class iRealToken
 
 This class encapsulates a cell token. It contains these properties:
 

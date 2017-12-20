@@ -18,7 +18,7 @@ irr-char, irr-lbar, irr-rbar, irr-measure, irr-annot {
 	font-stretch: condensed !important;
 }
 
-/* Outer container; if attribute data-hilite is set, hiliting is active */
+/* Outer container; if attribute hilite is set, hiliting is active */
 irr-chords {
 	box-sizing: border-box;
 	line-height:normal;
@@ -169,24 +169,24 @@ irr-annot {
 }
 
 /* special elements like bars, repeats, coda, measure etc 
-   are painted red if the data-hilite attribute is set */
+   are painted red if the hilite attribute is set */
 
-irr-chords[data-hilite] irr-chord>irr-chord,
-irr-chords[data-hilite] irr-over,
-irr-chords[data-hilite] irr-annot,
-irr-chords[data-hilite] irr-repeat,
-irr-chords[data-hilite] irr-measure,
-irr-chords[data-hilite] irr-comment {
+irr-chords[hilite] irr-chord>irr-chord,
+irr-chords[hilite] irr-over,
+irr-chords[hilite] irr-annot,
+irr-chords[hilite] irr-repeat,
+irr-chords[hilite] irr-measure,
+irr-chords[hilite] irr-comment {
 	color: red !important;
 }
-irr-chords[data-hilite] irr-section {
+irr-chords[hilite] irr-section{
 	background-color: #fcc;
 }
-irr-chords[data-hilite] irr-repeat {
+irr-chords[hilite] irr-repeat {
 	border-left-color: red;
 	border-top-color: red;
 }
-irr-chords[data-hilite] irr-char.irr-root {
+irr-chords[hilite] irr-char.irr-root {
 	color: lightblue !important;
 }
 

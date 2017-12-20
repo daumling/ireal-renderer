@@ -1,7 +1,7 @@
 /* 
  * iRealRenderer
  * 
- * Render any iReal Pro song into a jQuery <div>. You should make use of 
+ * Render any iReal Pro song into a n HTML conteiner element.
  */
 
 class iRealRenderer {
@@ -15,6 +15,10 @@ class iRealRenderer {
 			"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"
 		];
 		this.cells = [];
+		// This is set to true if the renderer is to render as a web component.
+		// It inhibits the creation of a <irr-chords> tag becasue the tag is
+		// already created as a web component. For now, just ignore the setting.
+		this.isComponent = false;
 	}
 
 	/**
@@ -256,7 +260,7 @@ class iRealRenderer {
 	/**
 	 * Render the parsed array.
 	 * @param {Song} song - with attached cells property
-	 * @param {Element} container - jQuery element of container to render into
+	 * @param {Element} container - HTML container element to render into (appends)
 	 * @param {Object} options - render annots, comments etc in red if hilite property is set
 	 * @returns {undefined}
 	 */
@@ -264,10 +268,14 @@ class iRealRenderer {
 		if (!song.cells)
 			return;
 		var hilite = options.hilite || false;
-		var table = $(`<irr-chords></irr-chords>`);
-		if (hilite)
-			table.attr("data-hilite", "true");
-		container.append(table);
+		if (!this.isComponent) {
+			var table = document.createElement("irr-chords");
+			if (hilite)
+				table.setAttribute("hilite", "");
+			container.appendChild(table);
+		}
+		else
+			table = container;
 		this.cell = -1;
 		this.small = false;
 		this.hilite = hilite;
@@ -285,13 +293,14 @@ class iRealRenderer {
 				html += this.commentHtml(cell.comments);
 			html += this.cellHtml(cell);
 			var el = this.cells[this.cell];
+			var cls = "";
 			if (this.small)
-				el.addClass("irr-small");
-			else
-				el.removeClass("irr-small");
+				cls += "small";
 			if (cell.comments.length)
-				el.addClass("irr-comment");
-			el.html(html);
+				cls += " irr-comment";
+			if (cls)
+				el.setAttribute("class", cls.trim());
+			el.innerHTML = html;
 		}
 	}
 	
@@ -409,7 +418,7 @@ class iRealRenderer {
 	
 	commentHtml(comments) {
 		var cell = this.cells[this.cell];
-		var style = getComputedStyle(cell[0]);
+		var style = getComputedStyle(cell);
 		var top = parseInt(style.height) + parseInt(style["margin-top"]);
 		var html = "";
 		for (var i = 0; i < comments.length; i++) {
@@ -432,18 +441,23 @@ class iRealRenderer {
 		// check if the last cell has a right border
 		if (!spacer && this.cell >= 0) {
 			var cell = this.cells[this.cell];
-			if ($("irr-rbar", cell).length === 0)
-				cell.append(`<irr-rbar>\ue000</irr-rbar>`);
+			if (cell.getElementsByTagName("irr-rbar").length === 0) {
+				var bar = document.createElement("irr-rbar");
+				bar.textContent = "\uE000";
+				cell.appendChild(bar);
+			}
 		}
 		// insert a spacer
-		if (spacer)
-			table.append(`<irr-spacer style="height:${spacer*10}px"></irr-spacer>`);
-		
+		if (spacer) {
+			var spc = document.createElement("irr-spacer");
+			spc.setAttribute("style", `height:${spacer*10}px`);
+			table.appendChild(spc);
+		}
 		this.cells = [];
 		for (i = 0; i < 16; i++) {
-			var cell  = $("<irr-cell/>");
+			var cell  = document.createElement("irr-cell");
 			this.cells.push(cell);
-			table.append(cell);
+			table.appendChild(cell);
 		}
 		
 		this.cell = 0;
