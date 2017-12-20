@@ -3,9 +3,14 @@
   <head>
     <meta charset="UTF-8">
     <title>iRealRenderer Demo</title>
-		<link rel="stylesheet" href="demo.css">
+		<!-- import the demo playlist, does not work with all browsers -->
+		<link rel="import" href="../demo/DemoPlaylist.html">
 		<link rel="stylesheet" href="node_modules/ireal-renderer/css/ireal-renderer.css">
-		<script src="demo.js"></script>
+		<link rel="stylesheet" href="../demo/demo.css">
+		<script>
+			const { Playlist, iRealRenderer } = require("ireal-renderer");
+		</script>
+		<script src="../demo/demo.js"></script>
 	</head>
 	<body>
 			<h3>iRealRenderer Demo</h3>
