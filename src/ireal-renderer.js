@@ -1,7 +1,7 @@
 /* 
  * iRealRenderer
  * 
- * Render any iReal Pro song into a n HTML conteiner element.
+ * Render any iReal Pro song into an HTML container element.
  */
 
 class iRealRenderer {
