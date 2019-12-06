@@ -210,6 +210,7 @@ This class wraps a chord with these members:
   - "p" - pause
   - "x" - single repeat
   - "r" - double repeat
+  - "n" - N.C. (no chord)
 - `modifiers` - a string with the chord modifiers, like 7, +, -, o etc
 - `over` - if non-null, an `iRealChord` object containing the over note
 - `alternate` - if non-null, a `iRealChord` object for the alternate chord 
