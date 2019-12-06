@@ -3,8 +3,7 @@ CSS file for demo.html.
 */
 
 body {
-	font-family: helvetica, swiss;
-	overflow-y: scroll;
+	font-family: Helvetica, swiss;
 }
 h3 {
 	text-align: center;

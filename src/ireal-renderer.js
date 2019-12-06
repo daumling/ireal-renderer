@@ -29,7 +29,7 @@ class iRealRenderer {
 	 * Each object has the following properties:
 	 * 
 	 * chord: if non-null, a chord object with these properties:
-	 *   note      - the base note (also blank, W = invisible root, p/x/r - pause/bar repeat/double-bar repeat)
+	 *   note      - the base note (also blank, W = invisible root, p/x/r - pause/bar repeat/double-bar repeat, n - no chord)
 	 *   modifiers - the modifiers, like 7, + o etc (string)
 	 *   over      - if non-null, another chord object for the under-note
 	 *   alternate - if non-null another chord object for the alternate chord 
@@ -102,6 +102,9 @@ class iRealRenderer {
 				token = " ";
 			}
 			switch (token[0]) {
+				case 'n':	// N.C.
+					obj.chord = new iRealChord(token[0]);
+					break;
 				case ',':	token = null; break; // separator
 				case 'S':	// segno
 				case 'T':	// time measurement
@@ -116,7 +119,7 @@ class iRealRenderer {
 				case 'r':
 				case 'x':
 				case 'W':
-					obj.chord = new iRealChord(token, "", null, null);
+					obj.chord = new iRealChord(token);
 					break;
 				case '<': 
 					token = token.substr(1, token.length-2);
@@ -309,31 +312,30 @@ class iRealRenderer {
 	// Private methods
 	
 	cellHtml(data) {
-		var html = "";
+		let html = "";
 		if (data.chord)
 		  switch(data.chord.note) {
 			case 'x':	// 1-bar repeat
-				html = `<irr-char class="single-repeat">\ue021</irr-char>`; break;
-				break;
 			case 'r':	// 2-bar repeat
-				html = `<irr-char class="double-repeat">\ue022</irr-char>`; break;
 			case 'p':	// pause
-				html = `<irr-char>\ue020</irr-char>`; break;
-				break;
-			case 'n':	// D.C.
-				html = `<irr-char>\ue011</irr-char>`; break;
-				break;
+			case 'n':	// N.C.
+				let cls = iRealRenderer.classes[data.chord.note];
+				html = `<irr-char class="${cls}"></irr-char>`; break;
 			default:
 				html = this.chordHtml(data.chord);
 		}
 		for (var i = 0; i < data.bars.length; i++) {
-			switch(data.bars[i]) {
-				case '|': html = `<irr-lbar>\ue000</irr-lbar>` + html; break;
-				case '[': html = `<irr-lbar>\ue001</irr-lbar>` + html; break;
-				case '{': html = `<irr-lbar>\ue004</irr-lbar>` + html; break;
-				case ']': html += `<irr-rbar>\ue001</irr-rbar>`; break;
-				case '}': html += `<irr-rbar>\ue005</irr-rbar>`; break;
-				case 'Z': html += `<irr-rbar>\ue003</irr-rbar>`; break;
+			let c = data.bars[i];
+			let cls = iRealRenderer.classes[c];
+			switch(c) {
+				case '|': 
+				case '[':
+				case '{': 
+					html = `<irr-lbar class="${cls}"></irr-lbar>` + html; break;
+				case ']':
+				case '}':
+				case 'Z':
+					html = `<irr-rbar class="${cls}"></irr-rbar>` + html; break;
 			}
 		}
 		if (!html)
@@ -359,7 +361,7 @@ class iRealRenderer {
 	baseChordHtml(chord) {
 		var { note, modifiers } = chord;
 		if (note === "W")
-			note = `<irr-char class="irr-root">\uE017</irr-char>`;
+			note = `<irr-char class="irr-root Root"></irr-char>`;
 		var sup = "";
 		switch(note[1]) {
 			case 'b': sup = "<sup>\u266d</sup>"; note = note[0]; break;
@@ -389,22 +391,18 @@ class iRealRenderer {
 					t += `<irr-section>${s}</irr-section>`;
 					break;
 				case 'N':	// repeat bracket
-					t += '<irr-repeat>' + annot[1] + '</irr-repeat>'; break;
+					t += `<irr-repeat>${annot[1]}</irr-repeat>`; break;
 				case 'f':	// fermata
-					t += "<irr-annot>\ue012</irr-annot>"; break;
 				case 'Q':	// coda
-					t += "<irr-annot>\ue014</irr-annot>"; break;
 				case 'S':	// segno
-					t += "<irr-annot>\ue013</irr-annot>"; break;
+					t += `<irr-annot class="${iRealRenderer.classes[annot[0]]}"></irr-annot>`; break;
 					break;
 				case 'T':	// measure: Txx, where T12 is 12/8
 					var m1 = annot.charCodeAt(1) - 48;
 					var m2 = annot.charCodeAt(2) - 48;
 					if (m1 === 1 && m2 === 2)
 						m1 = 12, m2 = 8;
-					m1 = String.fromCharCode(m1 + 0xE030);
-					m2 = String.fromCharCode(m2 + 0xE040);
-					s = `<irr-measure>${m1}<br/>${m2}</irr-measure>`;
+					s = `<irr-measure><span class="Measure-${m1}-Low"></span><br/><span class="Measure-${m2}-High"></span></irr-measure>`;
 					t = s + t;
 					break;
 				case 's':
@@ -436,17 +434,7 @@ class iRealRenderer {
 	}
 	
 	nextRow(table, spacer) {
-		var i;
-
-		// check if the last cell has a right border
-		if (!spacer && this.cell >= 0) {
-			var cell = this.cells[this.cell];
-			if (cell.getElementsByTagName("irr-rbar").length === 0) {
-				var bar = document.createElement("irr-rbar");
-				bar.textContent = "\uE000";
-				cell.appendChild(bar);
-			}
-		}
+		this.checkIfNeedsLastBar();
 		// insert a spacer
 		if (spacer) {
 			var spc = document.createElement("irr-spacer");
@@ -454,13 +442,35 @@ class iRealRenderer {
 			table.appendChild(spc);
 		}
 		this.cells = [];
-		for (i = 0; i < 16; i++) {
+		for (let i = 0; i < 16; i++) {
 			var cell  = document.createElement("irr-cell");
 			this.cells.push(cell);
 			table.appendChild(cell);
 		}
 		
 		this.cell = 0;
+	}
+
+	/**
+	 * Check if the current cell is the last cell of a row, and if it
+	 * needs a closing bar. This is true if there has been an opening
+	 * bar in the last 4 cells.
+	 */
+	checkIfNeedsLastBar() {
+		if (this.cell !== 15)
+			return;
+		let curCell = this.cells[this.cell];
+		if (curCell.getElementsByTagName("irr-rbar").length > 0)
+			return;
+		for (let i = 1; i < 4; i++) {
+			let cell = this.cells[this.cell - i];
+			if (cell.getElementsByTagName("irr-lbar").length > 0) {
+				var bar = document.createElement("irr-rbar");
+				bar.classList.add("Single-Barline");
+				curCell.appendChild(bar);
+				break;
+			}
+		}
 	}
 }
 
@@ -490,10 +500,59 @@ iRealRenderer.regExps = [
 iRealRenderer.replacements = {
 	"LZ": [" ", "|"],
 	"XyQ": [" ", " ", " "],
-	"Kcl": ["|", "x", " "]
+	"Kcl": ["|", " ", "x"]
 };
 
 iRealRenderer.cssPrefix = "";
+
+iRealRenderer.classes = {
+	'|': "Single-Barline",
+	'[': "Double-Barline",
+	']': "Double-Barline",
+	"?Z0": "Final-Barline",
+	'Z': "Reverse-Final-Barline",
+	'{': "Left-Repeat-Sign",
+	'}': "Right-Repeat-Sign",
+	"?DS": "Dal-Segno",
+	"?DC": "Da-Capo",
+	n: "No-Chord",
+	f: "Fermata",
+	S: "Segno",
+	Q: "Coda",
+	"?Q": "Codetta",
+	W: "Root",
+	"?W": "Root-Filled",
+	p: "Repeated-Figure1",
+	x: "Repeated-Figure2",
+	r: "Repeated-Figure3",
+	"?r4": "Repeated-Figure4",
+	"0L": "Measure-0-Low",
+	"1L": "Measure-1-Low",
+	"2L": "Measure-2-Low",
+	"3L": "Measure-3-Low",
+	"4L": "Measure-4-Low",
+	"5L": "Measure-5-Low",
+	"6L": "Measure-6-Low",
+	"7L": "Measure-7-Low",
+	"8L": "Measure-8-Low",
+	"9L": "Measure-9-Low",
+	"10L": "Measure-10-Low",
+	"11L": "Measure-11-Low",
+	"12L": "Measure-12-Low",
+	"0H": "Measure-0-High",
+	"1H": "Measure-1-High",
+	"2H": "Measure-2-High",
+	"3H": "Measure-3-High",
+	"4H": "Measure-4-High",
+	"5H": "Measure-5-High",
+	"6H": "Measure-6-High",
+	"7H": "Measure-7-High",
+	"8H": "Measure-8-High",
+	"9H": "Measure-9-High",
+	"10H": "Measure-10-High",
+	"11H": "Measure-11-High",
+	"12H": "Measure-12-High"
+};
 
 if (typeof module !== "undefined")
 	module.exports = { iRealRenderer, Playlist: require("./ireal-reader-tiny.js") };
@@ -510,7 +569,7 @@ class iRealToken {
 }
 
 class iRealChord {
-	constructor(note, modifiers, over, alternate) {
+	constructor(note, modifiers = "", over = null, alternate = null) {
 		this.note = note;
 		this.modifiers = modifiers;
 		this.over = over;

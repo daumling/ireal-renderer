@@ -1,15 +1,8 @@
 /*
 * ireal-renderer CSS.
 */
+@import 'style.css';
 
-@font-face{ 
-	font-family: 'iRealFont';
-	src: url('iRealFont.woff') format('woff'),
-	     url('iRealFont.ttf') format('truetype'),
-	     url('iRealFont.svg#webfont') format('svg');
-    font-weight: normal;
-    font-style: normal;
-}
 irr-char, irr-lbar, irr-rbar, irr-measure, irr-annot {
 	font-family: iRealFont;
 }
@@ -46,10 +39,10 @@ irr-rbar {
 	float: right;
 }
 /* repeat symbols */
-irr-char.single-repeat {
+irr-char.Repeated-Figure2 {
 	float: right;
 }
-irr-char.double-repeat {
+irr-char.Repeated-Figure3 {
 	float: right;
 	margin-right: -0.4em;
 }
@@ -65,14 +58,23 @@ irr-chord {
 irr-chord>sup, irr-chord>sub {
   vertical-align: baseline;
   position: relative;
-  top: -0.4em;
-  font-size: 0.7em;
+}
+
+irr-chord>sup {
+  margin-left: -0.1em;
+  top: -0.6em;
+  font-size: 0.6em;
 }
 
 irr-chord>sub {
-  position: relative;
-	font-size: 0.4em;
-	top: 0.4em; 
+  top: 0.4em;
+  font-size: 0.6em;
+  font-stretch: condensed;
+}
+
+irr-chord>sup+sub {
+  /* both: move the subscript in */
+  margin-left: -0.3em;
 }
 
 /* Alternate chords above the regular chord */
@@ -85,9 +87,13 @@ irr-chord>irr-chord {
 /* The "over note" in regular chords */
 irr-over {
 	display: block;
-	margin-top: -0.4em;
+	margin-top: -0.1em;
 	margin-left: 1ch;
 	font-size: 0.8em;
+}
+irr-over>sup {
+	font-size: 0.6em;
+	margin-left: -0.2em;
 }
 
 /* The "over note" in alt chords is behind the note */
@@ -188,6 +194,11 @@ irr-chords[hilite] irr-repeat {
 }
 irr-chords[hilite] irr-char.irr-root {
 	color: lightblue !important;
+}
+
+.No-Chord:before {
+	font-size: 0.8em;
+	content: "N.C.";
 }
 
 @media print {

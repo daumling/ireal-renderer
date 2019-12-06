@@ -46,7 +46,7 @@ fs.readFile("DemoPlaylist.html", "utf8", function(err, data) {
     if (err) throw err;
     const playlist = new Playlist(data);
     // see below
-    renderSong(playlist, 0, document.querySelector("#cong-container"));
+    renderSong(playlist, 0, document.querySelector("#song-container"));
 });
 ```
 

@@ -1,0 +1,161 @@
+@font-face {
+  font-family: 'iRealFont';
+  src:
+    url('fonts/iRealFont.ttf?un4b6y') format('truetype'),
+    url('fonts/iRealFont.woff?un4b6y') format('woff'),
+    url('fonts/iRealFont.svg?un4b6y#iRealFont') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+i {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'iRealFont' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.Single-Barline:before {
+  content: "\e000";
+}
+.Double-Barline:before {
+  content: "\e001";
+}
+.Final-Barline:before {
+  content: "\e002";
+}
+.Reverse-Final-Barline:before {
+  content: "\e003";
+}
+.Left-Repeat-Sign:before {
+  content: "\e004";
+}
+.Right-Repeat-Sign:before {
+  content: "\e005";
+}
+.Dal-Segno:before {
+  content: "\e010";
+}
+.Da-Capo:before {
+  content: "\e012";
+}
+.No-Chord:before {
+  content: "\e011";
+}
+.Fermata:before {
+  content: "\e013";
+}
+.Segno:before {
+  content: "\e014";
+}
+.Coda:before {
+  content: "\e015";
+}
+.Codetta:before {
+  content: "\e016";
+}
+.Root:before {
+  content: "\e017";
+}
+.Root-Filled:before {
+  content: "\e018";
+}
+.Repeated-Figure1:before {
+  content: "\e020";
+}
+.Repeated-Figure2:before {
+  content: "\e021";
+}
+.Repeated-Figure3:before {
+  content: "\e022";
+}
+.Repeated-Figure4:before {
+  content: "\e023";
+}
+.Measure-0-Low:before {
+  content: "\e030";
+}
+.Measure-1-Low:before {
+  content: "\e031";
+}
+.Measure-2-Low:before {
+  content: "\e032";
+}
+.Measure-3-Low:before {
+  content: "\e033";
+}
+.Measure-4-Low:before {
+  content: "\e034";
+}
+.Measure-5-Low:before {
+  content: "\e035";
+}
+.Measure-6-Low:before {
+  content: "\e036";
+}
+.Measure-7-Low:before {
+  content: "\e037";
+}
+.Measure-8-Low:before {
+  content: "\e038";
+}
+.Measure-9-Low:before {
+  content: "\e039";
+}
+.Measure-10-Low:before {
+  content: "\e03a";
+}
+.Measure-11-Low:before {
+  content: "\e03b";
+}
+.Measure-12-Low:before {
+  content: "\e03c";
+}
+.Measure-0-High:before {
+  content: "\e040";
+}
+.Measure-1-High:before {
+  content: "\e041";
+}
+.Measure-2-High:before {
+  content: "\e042";
+}
+.Measure-3-High:before {
+  content: "\e043";
+}
+.Measure-4-High:before {
+  content: "\e044";
+}
+.Measure-5-High:before {
+  content: "\e045";
+}
+.Measure-6-High:before {
+  content: "\e046";
+}
+.Measure-7-High:before {
+  content: "\e047";
+}
+.Measure-8-High:before {
+  content: "\e048";
+}
+.Measure-9-High:before {
+  content: "\e049";
+}
+.Measure-10-High:before {
+  content: "\e04a";
+}
+.Measure-11-High:before {
+  content: "\e04b";
+}
+.Measure-12-High:before {
+  content: "\e04c";
+}
