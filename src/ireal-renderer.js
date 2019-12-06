@@ -1,7 +1,7 @@
 /* 
  * iRealRenderer
  * 
- * Render any iReal Pro song into a n HTML conteiner element.
+ * Render any iReal Pro song into an HTML container element.
  */
 
 class iRealRenderer {
@@ -16,7 +16,7 @@ class iRealRenderer {
 		];
 		this.cells = [];
 		// This is set to true if the renderer is to render as a web component.
-		// It inhibits the creation of a <irr-chords> tag becasue the tag is
+		// It inhibits the creation of a <irr-chords>tag because the tag is
 		// already created as a web component. For now, just ignore the setting.
 		this.isComponent = false;
 	}

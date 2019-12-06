@@ -5,7 +5,7 @@
  * 
  * The Song instance has been modified slightly, mostly to exclude the parsing
  * music into single notes. The constructor accepts the content of a iReal Pro
- * HTML file and filles its "songs" property with all songs found in that
+ * HTML file and fills its "songs" property with all songs found in that
  * playlist.
  */
 
