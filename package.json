@@ -1,6 +1,6 @@
 {
   "name": "ireal-renderer",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "An HTML5/ES6 based renderer for iReal Pro playlists",
   "main": "src/ireal-renderer.js",
   "scripts": {
