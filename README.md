@@ -2,7 +2,7 @@
 
 ### Renders an iReal Pro playlist in an HTML page.
 
-[Click here to launch a live demo!](https://daumling.com/demo/ireal-renderer/demo/)
+[Click here to launch a live demo!](https://daumling.github.io/ireal-renderer/)
 
 #### Features
 
