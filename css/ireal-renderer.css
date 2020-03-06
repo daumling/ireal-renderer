@@ -2,9 +2,11 @@
 * ireal-renderer CSS.
 */
 @import 'style.css';
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans+Condensed:wght@700&display=swap');
 
 irr-char, irr-lbar, irr-rbar, irr-measure, irr-annot {
 	font-family: iRealFont;
+	margin-top: 0.2em;
 }
 
 .irr-small {
@@ -13,6 +15,7 @@ irr-char, irr-lbar, irr-rbar, irr-measure, irr-annot {
 
 /* Outer container; if attribute hilite is set, hiliting is active */
 irr-chords {
+	font-family: "Open Sans Condensed", sans-serif;
 	box-sizing: border-box;
 	line-height:normal;
 	display: grid;
@@ -27,7 +30,7 @@ irr-chords {
 irr-cell {
 	vertical-align: top;
 	position: relative;
-	margin-top:0;
+	/* margin-top: 2.5em; */
 	white-space:nowrap;
 }
 
@@ -128,6 +131,7 @@ irr-section {
 	position: absolute;
 	top: -1em;
 	left: -0.2em;
+	font-family: sans-serif;
 	font-size: 0.5em;
 	font-weight: bold;
 	margin-left: -2ch;
