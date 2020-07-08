@@ -478,7 +478,7 @@ class iRealRenderer {
  * 5 - the top chord as (chord)
  * @type RegExp
  */
-iRealRenderer.chordRegex = /^([ A-GW][b#]?)((?:sus|[\+\-\^\dhob#])*)(\*.+?\*)*(\/[A-G][#b]?)?(\(.*?\))?/;
+iRealRenderer.chordRegex = /^([ A-GWp][b#]?)((?:sus|alt|[\+\-\^\dhob#])*)(\*.+?\*)*(\/[A-G][#b]?)?(\(.*?\))?/;
 
 iRealRenderer.regExps = [
 	/^\*[a-zA-Z]/,							// section
