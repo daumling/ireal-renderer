@@ -69,11 +69,7 @@ class iRealRenderer {
 					found = true;
 					if (match.length <= 2) {
 						match = match[0];
-						var repl = iRealRenderer.replacements[match];
-						if (repl)
-							arr = arr.concat(repl);
-						else
-							arr.push(match);
+						arr.push(match);
 						text = text.substr(match.length);
 					}
 					else {
@@ -123,7 +119,6 @@ class iRealRenderer {
 					break;
 				case '<': 
 					token = token.substr(1, token.length-2);
-					token = token.replace(/XyQ/g, "   ");	// weird; needs to be done
 					obj.comments.push(token); 
 					token = null; break;
 				default:
@@ -149,7 +144,7 @@ class iRealRenderer {
 		var modifiers = match[2] || "";
 		var comment = match[3] || "";
 		if (comment)
-			modifiers += comment.substr(1, comment.length-2).replace("XyQ", "   ");
+			modifiers += comment.substr(1, comment.length-2);
 		var over = match[4] || "";
 		if (over[0] === '/')
 			over = over.substr(1);
@@ -492,16 +487,7 @@ iRealRenderer.regExps = [
 	/^<.*?>/,								// comments
 	/^ \(.*?\)/,							// blank and (note)
 	iRealRenderer.chordRegex,				// chords
-	/^LZ/,									// 1 cell + right bar
-	/^XyQ/,									// 3 empty cells
-	/^Kcl/									// repeat last bar
 ];
-
-iRealRenderer.replacements = {
-	"LZ": [" ", "|"],
-	"XyQ": [" ", " ", " "],
-	"Kcl": ["|", " ", "x"]
-};
 
 iRealRenderer.cssPrefix = "";
 
