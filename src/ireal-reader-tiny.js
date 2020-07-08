@@ -62,10 +62,7 @@ class Song {
 		}
 		r = r + s;
 		// now undo substitution obfuscation
-		//r =  r.replace('/Kcl/g', '| x').replace('/LZ/g', ' |').replace('/XyQ/g', '   ');
-		r =  r.replace(/Kcl/g, '| x');
-		r =  r.replace(/LZ/g, ' |');
-		r =  r.replace(/XyQ/g, '   ');
+		r =  r.replace(/Kcl/g, '| x').replace(/LZ/g, ' |').replace(/XyQ/g, '   ');
 		return r;
 	}
 
