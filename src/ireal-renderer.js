@@ -312,7 +312,6 @@ class iRealRenderer {
 		  switch(data.chord.note) {
 			case 'x':	// 1-bar repeat
 			case 'r':	// 2-bar repeat
-			case 'p':	// pause
 			case 'n':	// N.C.
 				let cls = iRealRenderer.classes[data.chord.note];
 				html = `<irr-char class="${cls}"></irr-char>`; break;
@@ -357,6 +356,8 @@ class iRealRenderer {
 		var { note, modifiers } = chord;
 		if (note === "W")
 			note = `<irr-char class="irr-root Root"></irr-char>`;
+		if (note === "p")
+			note = `<irr-char class="Repeated-Figure1"></irr-char>`;
 		var sup = "";
 		switch(note[1]) {
 			case 'b': sup = "<sup>\u266d</sup>"; note = note[0]; break;
@@ -485,7 +486,6 @@ iRealRenderer.regExps = [
 	/^T\d\d/,								// time measurement
 	/^N./,									// repeat marker
 	/^<.*?>/,								// comments
-	/^ \(.*?\)/,							// blank and (note)
 	iRealRenderer.chordRegex,				// chords
 ];
 
