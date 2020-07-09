@@ -50,19 +50,19 @@ class Song {
 
 	//unscrambling hints from https://github.com/ironss/accompaniser/blob/master/irealb_parser.lua
 	//strings are broken up in 50 character segments. each segment undergoes character substitution addressed by obfusc50()
+	//note that a final part of length 50 or 51 is not scrambled.
+	//finally need to substitute for Kcl, LZ and XyQ.
 	unscramble(s) {
 		let r = '', p;
 
-		while(s.length > 50){
+		while(s.length > 51){
 			p = s.substring(0, 50);
 			s = s.substring(50);
-			if(s.length < 2){
-				r = r + p;
-			}else{
-				r = r + this.obfusc50(p);
-			}
+			r = r + this.obfusc50(p);
 		}
 		r = r + s;
+		// now undo substitution obfuscation
+		r =  r.replace(/Kcl/g, '| x').replace(/LZ/g, ' |').replace(/XyQ/g, '   ');
 		return r;
 	}
 
