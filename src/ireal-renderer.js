@@ -318,18 +318,22 @@ class iRealRenderer {
 			default:
 				html = this.chordHtml(data.chord);
 		}
+		let oldc = '';
 		for (var i = 0; i < data.bars.length; i++) {
 			let c = data.bars[i];
-			let cls = iRealRenderer.classes[c];
-			switch(c) {
-				case '|': 
-				case '[':
-				case '{': 
-					html = `<irr-lbar class="${cls}"></irr-lbar>` + html; break;
-				case ']':
-				case '}':
-				case 'Z':
-					html = `<irr-rbar class="${cls}"></irr-rbar>` + html; break;
+			if (c != oldc) {
+				let cls = iRealRenderer.classes[c];
+				switch(c) {
+					case '|':
+					case '[':
+					case '{':
+						html = `<irr-lbar class="${cls}"></irr-lbar>` + html; break;
+					case ']':
+					case '}':
+					case 'Z':
+						html = `<irr-rbar class="${cls}"></irr-rbar>` + html; break;
+				}
+				oldc = c;
 			}
 		}
 		if (!html)
