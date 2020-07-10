@@ -165,6 +165,7 @@ class iRealRenderer {
 		}
 		else
 			over = null;
+		modifiers = modifiers.replace(/b/g, "\u266d").replace(/#/g, "\u266f");	// convert to proper flat and sharp
 		return new iRealChord(note, modifiers, over, alternate);
 	}
 	
