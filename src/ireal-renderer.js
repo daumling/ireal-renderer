@@ -91,6 +91,7 @@ class iRealRenderer {
 		// pass 2: extract prefixes, suffixes, annotations and comments
 		var out = [];
 		var obj = this.newToken(out);
+		var prevobj = null;
 		for (i = 0; i < arr.length; i++) {
 			var token = arr[i];
 			if (token instanceof Array) {
@@ -98,6 +99,17 @@ class iRealRenderer {
 				token = " ";
 			}
 			switch (token[0]) {
+				case '{':	// open repeat
+				case '[':	// open double bar
+					obj.bars = token; token = null; break;
+				case '|':	// single bar - close previous and open this
+					if (prevobj) { prevobj.bars += ')'; prevobj = null; }
+					obj.bars = '('; token = null; break;
+				case ']':	// close double bar
+				case '}':	// close repeat
+				case 'Z':	// ending double bar
+					if (prevobj) { prevobj.bars += token; prevobj = null; }
+					token = null; break;
 				case 'n':	// N.C.
 					obj.chord = new iRealChord(token[0]);
 					break;
@@ -111,7 +123,7 @@ class iRealRenderer {
 				case 'l':	// normal
 				case 'f':	// fermata
 				case '*': obj.annots.push(token); token = null; break;
-				case 'Y': obj.spacer++; token = null; break;
+				case 'Y': obj.spacer++; token = null; prevobj = null; break;
 				case 'r':
 				case 'x':
 				case 'W':
@@ -123,15 +135,8 @@ class iRealRenderer {
 					token = null; break;
 				default:
 			}
-			if (token) {
-				if ("]}Z".indexOf(arr[i+1]) >= 0)
-					obj.bars += arr[++i];
-				if ("{[|".indexOf(token) >= 0) {
-					obj.bars += token; token = null;
-				}
-			}
 			if (token && i < arr.length-1) {
-				obj.token = token;
+				prevobj = obj;		// so we can add any closing barline later
 				obj = this.newToken(out);
 			}
 		}
@@ -276,6 +281,7 @@ class iRealRenderer {
 		else
 			table = container;
 		this.cell = -1;
+		this.closebar = false;
 		this.small = false;
 		this.hilite = hilite;
 		
@@ -300,6 +306,7 @@ class iRealRenderer {
 			if (cls)
 				el.setAttribute("class", cls.trim());
 			el.innerHTML = html;
+			this.closebar = cell.bars.indexOf(')') >= 0;
 		}
 	}
 	
@@ -319,22 +326,19 @@ class iRealRenderer {
 			default:
 				html = this.chordHtml(data.chord);
 		}
-		let oldc = '';
 		for (var i = 0; i < data.bars.length; i++) {
 			let c = data.bars[i];
-			if (c != oldc) {
-				let cls = iRealRenderer.classes[c];
-				switch(c) {
-					case '|':
-					case '[':
-					case '{':
-						html = `<irr-lbar class="${cls}"></irr-lbar>` + html; break;
-					case ']':
-					case '}':
-					case 'Z':
-						html = `<irr-rbar class="${cls}"></irr-rbar>` + html; break;
-				}
-				oldc = c;
+			let cls = iRealRenderer.classes[c];
+			switch(c) {
+				case '(':
+				case '[':
+				case '{':
+					html = `<irr-lbar class="${cls}"></irr-lbar>` + html; break;
+				//case ')':	// not handled here, only at end of line below
+				case ']':
+				case '}':
+				case 'Z':
+					html = `<irr-rbar class="${cls}"></irr-rbar>` + html; break;
 			}
 		}
 		if (!html)
@@ -460,18 +464,12 @@ class iRealRenderer {
 	checkIfNeedsLastBar() {
 		if (this.cell !== 15)
 			return;
-		let curCell = this.cells[this.cell];
-		if (curCell.getElementsByTagName("irr-rbar").length > 0)
+		if (!this.closebar)
 			return;
-		for (let i = 1; i < 4; i++) {
-			let cell = this.cells[this.cell - i];
-			if (cell.getElementsByTagName("irr-lbar").length > 0) {
-				var bar = document.createElement("irr-rbar");
-				bar.classList.add("Single-Barline");
-				curCell.appendChild(bar);
-				break;
-			}
-		}
+		let curCell = this.cells[this.cell];
+		var bar = document.createElement("irr-rbar");
+		bar.classList.add("Single-Barline");
+		curCell.insertBefore(bar, curCell.firstChild);	// must insert, not append, for correct positioning
 	}
 }
 
@@ -499,7 +497,8 @@ iRealRenderer.regExps = [
 iRealRenderer.cssPrefix = "";
 
 iRealRenderer.classes = {
-	'|': "Single-Barline",
+	'(': "Single-Barline",
+	')': "Single-Barline",
 	'[': "Double-Barline",
 	']': "Double-Barline",
 	"?Z0": "Final-Barline",
