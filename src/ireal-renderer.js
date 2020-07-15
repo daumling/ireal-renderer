@@ -287,7 +287,7 @@ class iRealRenderer {
 		
 		for (var i = 0; i < song.cells.length; i++) {
 			var cell = song.cells[i];
-			if (this.cell < 0 || this.cell === 15 || cell.spacer)
+			if (this.cell < 0 || this.cell === 15)
 				this.nextRow(table, cell.spacer);
 			else
 				this.cell++;
