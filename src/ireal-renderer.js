@@ -484,7 +484,8 @@ class iRealRenderer {
  * 5 - the top chord as (chord)
  * @type RegExp
  */
-iRealRenderer.chordRegex = /^([ A-GWp][b#]?)((?:sus|alt|add|[\+\-\^\dhob#])*)(\*.+?\*)*(\/[A-G][#b]?)?(\(.*?\))?/;
+iRealRenderer.chordRegex = /^([A-G][b#]?)((?:sus|alt|add|[\+\-\^\dhob#])*)(\*.+?\*)*(\/[A-G][#b]?)?(\(.*?\))?/;
+iRealRenderer.chordRegex2 = /^([ Wp])()()(\/[A-G][#b]?)?(\(.*?\))?/;	// need the empty captures to match chordRegex
 
 iRealRenderer.regExps = [
 	/^\*[a-zA-Z]/,							// section
@@ -492,6 +493,7 @@ iRealRenderer.regExps = [
 	/^N./,									// repeat marker
 	/^<.*?>/,								// comments
 	iRealRenderer.chordRegex,				// chords
+	iRealRenderer.chordRegex2,				// space, W and p (with optional alt chord)
 ];
 
 iRealRenderer.cssPrefix = "";
