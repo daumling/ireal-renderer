@@ -91,6 +91,7 @@ class iRealRenderer {
 		// pass 2: extract prefixes, suffixes, annotations and comments
 		var out = [];
 		var obj = this.newToken(out);
+		var prevobj = null;
 		for (i = 0; i < arr.length; i++) {
 			var token = arr[i];
 			if (token instanceof Array) {
@@ -98,6 +99,17 @@ class iRealRenderer {
 				token = " ";
 			}
 			switch (token[0]) {
+				case '{':	// open repeat
+				case '[':	// open double bar
+					obj.bars = token; token = null; break;
+				case '|':	// single bar - close previous and open this
+					if (prevobj) { prevobj.bars += ')'; prevobj = null; }
+					obj.bars = '('; token = null; break;
+				case ']':	// close double bar
+				case '}':	// close repeat
+				case 'Z':	// ending double bar
+					if (prevobj) { prevobj.bars += token; prevobj = null; }
+					token = null; break;
 				case 'n':	// N.C.
 					obj.chord = new iRealChord(token[0]);
 					break;
@@ -111,7 +123,7 @@ class iRealRenderer {
 				case 'l':	// normal
 				case 'f':	// fermata
 				case '*': obj.annots.push(token); token = null; break;
-				case 'Y': obj.spacer++; token = null; break;
+				case 'Y': obj.spacer++; token = null; prevobj = null; break;
 				case 'r':
 				case 'x':
 				case 'W':
@@ -123,15 +135,8 @@ class iRealRenderer {
 					token = null; break;
 				default:
 			}
-			if (token) {
-				if ("]}Z".indexOf(arr[i+1]) >= 0)
-					obj.bars += arr[++i];
-				if ("{[|".indexOf(token) >= 0) {
-					obj.bars += token; token = null;
-				}
-			}
 			if (token && i < arr.length-1) {
-				obj.token = token;
+				prevobj = obj;		// so we can add any closing barline later
 				obj = this.newToken(out);
 			}
 		}
@@ -165,6 +170,7 @@ class iRealRenderer {
 		}
 		else
 			over = null;
+		modifiers = modifiers.replace(/b/g, "\u266d").replace(/#/g, "\u266f");	// convert to proper flat and sharp
 		return new iRealChord(note, modifiers, over, alternate);
 	}
 	
@@ -275,12 +281,13 @@ class iRealRenderer {
 		else
 			table = container;
 		this.cell = -1;
+		this.closebar = false;
 		this.small = false;
 		this.hilite = hilite;
 		
 		for (var i = 0; i < song.cells.length; i++) {
 			var cell = song.cells[i];
-			if (this.cell < 0 || this.cell === 15 || cell.spacer)
+			if (this.cell < 0 || this.cell === 15)
 				this.nextRow(table, cell.spacer);
 			else
 				this.cell++;
@@ -299,6 +306,7 @@ class iRealRenderer {
 			if (cls)
 				el.setAttribute("class", cls.trim());
 			el.innerHTML = html;
+			this.closebar = cell.bars.indexOf(')') >= 0;
 		}
 	}
 	
@@ -312,7 +320,6 @@ class iRealRenderer {
 		  switch(data.chord.note) {
 			case 'x':	// 1-bar repeat
 			case 'r':	// 2-bar repeat
-			case 'p':	// pause
 			case 'n':	// N.C.
 				let cls = iRealRenderer.classes[data.chord.note];
 				html = `<irr-char class="${cls}"></irr-char>`; break;
@@ -323,10 +330,11 @@ class iRealRenderer {
 			let c = data.bars[i];
 			let cls = iRealRenderer.classes[c];
 			switch(c) {
-				case '|': 
+				case '(':
 				case '[':
-				case '{': 
+				case '{':
 					html = `<irr-lbar class="${cls}"></irr-lbar>` + html; break;
+				//case ')':	// not handled here, only at end of line below
 				case ']':
 				case '}':
 				case 'Z':
@@ -357,6 +365,8 @@ class iRealRenderer {
 		var { note, modifiers } = chord;
 		if (note === "W")
 			note = `<irr-char class="irr-root Root"></irr-char>`;
+		if (note === "p")
+			note = `<irr-char class="Repeated-Figure1"></irr-char>`;
 		var sup = "";
 		switch(note[1]) {
 			case 'b': sup = "<sup>\u266d</sup>"; note = note[0]; break;
@@ -454,18 +464,12 @@ class iRealRenderer {
 	checkIfNeedsLastBar() {
 		if (this.cell !== 15)
 			return;
-		let curCell = this.cells[this.cell];
-		if (curCell.getElementsByTagName("irr-rbar").length > 0)
+		if (!this.closebar)
 			return;
-		for (let i = 1; i < 4; i++) {
-			let cell = this.cells[this.cell - i];
-			if (cell.getElementsByTagName("irr-lbar").length > 0) {
-				var bar = document.createElement("irr-rbar");
-				bar.classList.add("Single-Barline");
-				curCell.appendChild(bar);
-				break;
-			}
-		}
+		let curCell = this.cells[this.cell];
+		var bar = document.createElement("irr-rbar");
+		bar.classList.add("Single-Barline");
+		curCell.insertBefore(bar, curCell.firstChild);	// must insert, not append, for correct positioning
 	}
 }
 
@@ -478,21 +482,23 @@ class iRealRenderer {
  * 5 - the top chord as (chord)
  * @type RegExp
  */
-iRealRenderer.chordRegex = /^([ A-GWp][b#]?)((?:sus|alt|[\+\-\^\dhob#])*)(\*.+?\*)*(\/[A-G][#b]?)?(\(.*?\))?/;
+iRealRenderer.chordRegex = /^([A-G][b#]?)((?:sus|alt|add|[\+\-\^\dhob#])*)(\*.+?\*)*(\/[A-G][#b]?)?(\(.*?\))?/;
+iRealRenderer.chordRegex2 = /^([ Wp])()()(\/[A-G][#b]?)?(\(.*?\))?/;	// need the empty captures to match chordRegex
 
 iRealRenderer.regExps = [
 	/^\*[a-zA-Z]/,							// section
 	/^T\d\d/,								// time measurement
 	/^N./,									// repeat marker
 	/^<.*?>/,								// comments
-	/^ \(.*?\)/,							// blank and (note)
 	iRealRenderer.chordRegex,				// chords
+	iRealRenderer.chordRegex2,				// space, W and p (with optional alt chord)
 ];
 
 iRealRenderer.cssPrefix = "";
 
 iRealRenderer.classes = {
-	'|': "Single-Barline",
+	'(': "Single-Barline",
+	')': "Single-Barline",
 	'[': "Double-Barline",
 	']': "Double-Barline",
 	"?Z0": "Final-Barline",
