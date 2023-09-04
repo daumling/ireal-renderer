@@ -35,7 +35,7 @@ window.addEventListener("load", async () => {
 		container.innerHTML = `<h3>${song.title} (${song.key
 			.replace(/b/g, "\u266d")
 			.replace(/#/g, "\u266f")})</h3><h5>${song.composer}</h5>`;
-    r.render(song, container, options);			
+		r.render(song, container, options);			
 	}
 	
 	function renderSelected() {
