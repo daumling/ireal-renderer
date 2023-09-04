@@ -32,8 +32,10 @@ window.addEventListener("load", async () => {
 		r.parse(song);
 		song = r.transpose(song, options);
 		var container = document.getElementById("song-" + index);
-		container.innerHTML = `<h3>${song.title} (${song.key.replace(/b/g, "\u266d").replace(/#/g, "\u266f")})</h3>`;
-		r.render(song, container, options);			
+    container.innerHTML = `<h3>${song.title} (${song.key
+      .replace(/b/g, "\u266d")
+      .replace(/#/g, "\u266f")})</h3><h5>${song.composer}</h5>`;
+    r.render(song, container, options);			
 	}
 	
 	function renderSelected() {
