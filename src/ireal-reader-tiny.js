@@ -20,43 +20,43 @@ class Playlist {
 }
 
 class Song {
-  constructor(data) {
-    this.cells = [];
-    if (!data) {
-      this.title = "";
-      this.composer = "";
-      this.style = "";
-      this.key = "";
-      this.transpose = 0;
-      this.exStyle = "";
-      this.bpm = 0;
-      this.repeats = 0;
-      this.music = "";
-      return;
+    constructor(data) {
+      this.cells = [];
+      if (!data) {
+        this.title = "";
+        this.composer = "";
+        this.style = "";
+        this.key = "";
+        this.transpose = 0;
+        this.exStyle = "";
+        this.bpm = 0;
+        this.repeats = 0;
+        this.music = "";
+        return;
+      }
+      let parts = data.split("="); //split on one sign, remove the blanks
+      let musicPrefix = "1r34LbKcu7";
+      this.title = parts[0];
+      const composerSplit = parts[1].split(" ");
+      this.composer =
+        composerSplit.length == 2 //fixes composer name order reversed for 2-word names
+          ? `${composerSplit[1]} ${composerSplit[0]}`
+          : parts[1];
+      this.style = parts[3];
+      this.key = parts[4];
+      this.transpose = +parts[5] || 0;
+      this.exStyle = parts[7];
+      this.bpm = +parts[8];
+      this.repeats = +parts[9] || 3;
+      parts = parts[6].split(musicPrefix);
+      this.music = this.unscramble(parts[1]);
     }
-    let parts = data.split("="); //split on one sign, remove the blanks
-    let musicPrefix = "1r34LbKcu7";
-    this.title = parts[0];
-    const composerSplit = parts[1].split(" ");
-    this.composer =
-      composerSplit.length == 2 //fixes composer name order reversed for 2-word names
-        ? `${composerSplit[1]} ${composerSplit[0]}`
-        : parts[1];
-    this.style = parts[3];
-    this.key = parts[4];
-    this.transpose = +parts[5] || 0;
-    this.exStyle = parts[7];
-    this.bpm = +parts[8];
-    this.repeats = +parts[9] || 3;
-    parts = parts[6].split(musicPrefix);
-    this.music = this.unscramble(parts[1]);
-  }
 
-  //unscrambling hints from https://github.com/ironss/accompaniser/blob/master/irealb_parser.lua
-  //strings are broken up in 50 character segments. each segment undergoes character substitution addressed by obfusc50()
-  //note that a final part of length 50 or 51 is not scrambled.
-  //finally need to substitute for Kcl, LZ and XyQ.
-  unscramble(s) {
+    //unscrambling hints from https://github.com/ironss/accompaniser/blob/master/irealb_parser.lua
+    //strings are broken up in 50 character segments. each segment undergoes character substitution addressed by obfusc50()
+    //note that a final part of length 50 or 51 is not scrambled.
+    //finally need to substitute for Kcl, LZ and XyQ.
+    unscramble(s) {
 		let r = '', p;
 
 		while(s.length > 51){
