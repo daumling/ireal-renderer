@@ -38,10 +38,8 @@ class Song {
 		let musicPrefix = "1r34LbKcu7";
 		this.title = parts[0];
 		const composerSplit = parts[1].split(" ");
-      this.composer =
-        composerSplit.length == 2 //fixes composer name order reversed for 2-word names
-          ? `${composerSplit[1]} ${composerSplit[0]}`
-          : parts[1];
+		//fixes composer name order reversed for 2-word names    
+		this.composer = composerSplit.length == 2 ? `${composerSplit[1]} ${composerSplit[0]}` : parts[1];
 		this.style = parts[3];
 		this.key = parts[4];
 		this.transpose = +parts[5] || 0;
