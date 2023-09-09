@@ -316,16 +316,7 @@ class iRealRenderer {
 	
 	cellHtml(data) {
 		let html = "";
-		if (data.chord)
-		  switch(data.chord.note) {
-			case 'x':	// 1-bar repeat
-			case 'r':	// 2-bar repeat
-			case 'n':	// N.C.
-				let cls = iRealRenderer.classes[data.chord.note];
-				html = `<irr-char class="${cls}"></irr-char>`; break;
-			default:
-				html = this.chordHtml(data.chord);
-		}
+		if (data.chord) html = this.chordHtml(data.chord);
 		for (var i = 0; i < data.bars.length; i++) {
 			let c = data.bars[i];
 			let cls = iRealRenderer.classes[c];
@@ -367,6 +358,10 @@ class iRealRenderer {
 			note = `<irr-char class="irr-root Root"></irr-char>`;
 		if (note === "p")
 			note = `<irr-char class="Repeated-Figure1"></irr-char>`;
+		if (["x", "r", "n"].includes(note)) {
+			// 1-bar repeat, 2-bar repeat, and no-chord
+			note = `<irr-char class="${iRealRenderer.classes[note]}"></irr-char>`;
+		}
 		var sup = "";
 		switch(note[1]) {
 			case 'b': sup = "<sup>\u266d</sup>"; note = note[0]; break;
@@ -482,7 +477,7 @@ class iRealRenderer {
  * 5 - the top chord as (chord)
  * @type RegExp
  */
-iRealRenderer.chordRegex = /^([A-G][b#]?)((?:sus|alt|add|[\+\-\^\dhob#])*)(\*.+?\*)*(\/[A-G][#b]?)?(\(.*?\))?/;
+iRealRenderer.chordRegex = /^([A-Gxnr][b#]?)((?:sus|alt|add|[\+\-\^\dhob#])*)(\*.+?\*)*(\/[A-G][#b]?)?(\(.*?\))?/;
 iRealRenderer.chordRegex2 = /^([ Wp])()()(\/[A-G][#b]?)?(\(.*?\))?/;	// need the empty captures to match chordRegex
 
 iRealRenderer.regExps = [
